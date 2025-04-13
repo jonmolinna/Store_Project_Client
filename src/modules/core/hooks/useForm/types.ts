@@ -1,0 +1,1 @@
+export type validatorFn<T> = (form: T) => Partial<Record<keyof T, string>>
