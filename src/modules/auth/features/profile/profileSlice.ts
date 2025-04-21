@@ -19,7 +19,7 @@ const profileSlice = createSlice({
             })
             .addCase(fetchProfile.fulfilled, (state, action) => {
                 state.loading = 'succeeded'
-
+                state.profile = action.payload
             })
             .addCase(fetchProfile.rejected, (state, action) => {
                 state.loading = 'failed'

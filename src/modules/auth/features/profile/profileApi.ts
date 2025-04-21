@@ -1,16 +1,17 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import { apiPrivate } from "../../../../settings/axios.";
+import { AxiosInstance } from "axios";
+import { Profile } from "../../interface/profile.interface";
 
 // GET PROFILE
-export const fetchProfile = createAsyncThunk(
-  "auth/fetchProfile",
-  async (_, thunkApi) => {
-    try {
-      const response = await apiPrivate.get("auth/profile");
-      const data = response.data;
-      console.log("PROFILE 1 --> ", data);
-    } catch (error) {
-      console.log("error --> ", error);
-    }
+export const fetchProfile = createAsyncThunk<
+  Profile,
+  AxiosInstance,
+  { rejectValue: string }
+>("auth/fetchProfile", async (axiosPrivate, thunkApi) => {
+  try {
+    const response = await axiosPrivate.get("auth/profile");
+    return response.data;
+  } catch (error) {
+    console.log("error --> ", error);
   }
-);
+});

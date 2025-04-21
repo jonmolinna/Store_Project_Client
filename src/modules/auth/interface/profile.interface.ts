@@ -3,10 +3,11 @@ enum Role {
   ADMIN = "admin",
 }
 
-interface Profile {
+export interface Profile {
   id: number;
   username: string;
   name: string;
+  lastName: string;
   roles: Array<Role>;
 }
 

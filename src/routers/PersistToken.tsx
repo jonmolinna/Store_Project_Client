@@ -7,13 +7,13 @@ import { RootState } from "../store";
 
 const PersistToken = () => {
   const [loading, setLoading] = useState(true);
-  const refresh = useRefreshToken();
+  const refreshToken = useRefreshToken();
   const { token } = useSelector((state: RootState) => state.auth);
 
   useEffect(() => {
     const verifyRefreshToken = async () => {
       try {
-        await refresh();
+        await refreshToken();
       } catch (err) {
         console.log("ERROR ---> ", err);
       } finally {

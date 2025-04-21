@@ -2,31 +2,49 @@ import { useEffect } from "react";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../store";
 import { apiPrivate } from "../../../settings/axios.";
+import useRefreshToken from "./useRefreshToken";
 
+// AXIOS PRIVATE AND AUTH REFRESH TOKEN INTERCEPTOR
 const useAxiosPrivate = () => {
+  const refreshToken = useRefreshToken();
   const { token } = useSelector((state: RootState) => state.auth);
 
-
   useEffect(() => {
-    const requetInterceptor = apiPrivate.interceptors.request.use(
+    const requestInterceptor = apiPrivate.interceptors.request.use(
       (config) => {
-        if (token && config.headers) {
-          config.headers['Authorization'] = `Bearer ${token}`;
+        if (!config.headers["Authorization"]) {
+          config.headers["Authorization"] = `Bearer ${token}`;
         }
 
         return config;
       },
-      
       (error) => Promise.reject(error)
-    )
+    );
 
-    // LIMPIIZA: QUITAL EL INTERCEPTOR
+    const responseInterceptor = apiPrivate.interceptors.response.use(
+      (response) => response,
+      async (error) => {
+        const prevRequest = error?.config;
+
+        if (error?.response?.status === 403 && !prevRequest?.sent) {
+          prevRequest.sent = true;
+
+          const newAccessToken = await refreshToken();
+          prevRequest.headers["Authorization"] = `Bearer ${newAccessToken}`;
+          return apiPrivate(prevRequest);
+        }
+
+        return Promise.reject(error);
+      }
+    );
+
     return () => {
-      apiPrivate.interceptors.request.eject(requetInterceptor);
-    }
+      apiPrivate.interceptors.request.eject(requestInterceptor);
+      apiPrivate.interceptors.response.eject(responseInterceptor);
+    };
+  }, [token, refreshToken]);
 
-  }, [token])
-   
+  return apiPrivate;
 };
 
 export default useAxiosPrivate;

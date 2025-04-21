@@ -1,7 +1,7 @@
+import { useEffect, useState } from "react";
 import { Outlet } from "react-router";
 import { MdOutlineMenu } from "react-icons/md";
 import Sidebar from "./modules/core/components/Sidebar";
-import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "./store";
 import { fetchProfile } from "./modules/auth/features/profile/profileApi";
@@ -10,18 +10,15 @@ import useAxiosPrivate from "./modules/auth/hooks/useAxiosPrivate";
 function App() {
   const [openSidebar, setOpenSidebar] = useState(false);
   const dispatch = useDispatch<AppDispatch>();
-  useAxiosPrivate();
+  const axiosPrivate = useAxiosPrivate()
 
   useEffect(() => {
-
     const getProfile = async () => {
-         dispatch(fetchProfile());
-      
-    }
-    console.log("YOOO ---> ")
+      dispatch(fetchProfile(axiosPrivate));
+    };
 
-    getProfile()
-  }, [])
+    getProfile();
+  }, []);
 
   return (
     <div className="max-w-6xl mx-auto">
