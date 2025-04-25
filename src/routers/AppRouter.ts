@@ -4,6 +4,8 @@ import App from "../App";
 import Dashboard from "../modules/dashboard/Dashboard";
 import { ProtectedRoute } from "./ProtectedRoute";
 import PersistToken from "./PersistToken";
+import Users from "../modules/user/pages/Users";
+import Profile from "../modules/user/pages/Profile";
 
 const router = createBrowserRouter([
   {
@@ -17,12 +19,25 @@ const router = createBrowserRouter([
         Component: ProtectedRoute,
         children: [
           {
-            path: "/dashboard",
+            path: "",
             Component: App,
             children: [
               {
                 index: true,
                 Component: Dashboard,
+              },
+              {
+                path: "users",
+                children: [
+                  {
+                    path: "all",
+                    Component: Users,
+                  },
+                  {
+                    path: "profile",
+                    Component: Profile,
+                  },
+                ],
               },
             ],
           },
